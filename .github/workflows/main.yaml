@@ -26,7 +26,7 @@ jobs:
 
       - name: Extract app version
         id: extract_version
-        run: echo "::set-output name=version::$(grep -oP 'version:\s*\K.+' pubspec.yaml)"
+        run: echo "VERSION=$(grep 'version:' pubspec.yaml | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Create build
         run: flutter build apk --release
@@ -35,5 +35,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/flutter-apk/*"
-          tag: v${{ steps.extract_version.outputs.version }}
+          tag: v${{ env.VERSION }}
           token: ${{ secrets.TOKEN }}
